@@ -1,0 +1,10 @@
+@Section(.update)
+var full = 100.0
+var game = @Assembly("Assembly-CSharp")
+var p = @Class(game.ScheduleOne.PlayerScripts.Player).Local
+if (@IsNull(p)) { @Exit("no player") }
+var h = p.Health
+if (@IsNull(h)) { @Exit("no health object") }
+if (h.get_CurrentHealth() < full) {
+    h.set_CurrentHealth(full)
+}

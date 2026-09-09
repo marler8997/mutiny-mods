@@ -1,0 +1,12 @@
+@Section(.update)
+var game = @Assembly("Assembly-CSharp")
+var p = @Class(game.ScheduleOne.PlayerScripts.Player).Local
+if (@IsNull(p)) { @Exit("no player") }
+var item = p.GetEquippedItem()
+if (@IsNull(item)) { @Exit("nothing equipped") }
+if (@HasField(item, "Value") == 0) { @Exit("not a weapon") }
+var def = item.get_Definition()
+if (@IsNull(def)) { @Exit("no item definition") }
+if (item.Value < def.DefaultValue) {
+    set item.Value = def.DefaultValue
+}

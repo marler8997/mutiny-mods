@@ -1,0 +1,11 @@
+@Section(.update)
+var game = @Assembly("Assembly-CSharp")
+var legacy = @Assembly("UnityEngine.InputLegacyModule")
+var Input = @Class(legacy.UnityEngine.Input)
+var pm = @Class(game.ScheduleOne.PlayerScripts.PlayerMovement).get_Instance()
+if (@IsNull(pm)) { @Exit("no player") }
+if (pm.get_IsGrounded() == 0) {
+    if (Input.GetButtonDown("Jump")) {
+        pm.Jump()
+    }
+}

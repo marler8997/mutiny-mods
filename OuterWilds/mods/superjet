@@ -1,0 +1,16 @@
+// transThrust: thrust while holding the jetpack   (game default = 6)
+// boostThrust: the boost burst                    (game default = 23)
+@Section(.update)
+var transThrust = 18
+var boostThrust = 70
+
+var game = @Assembly("Assembly-CSharp")
+var Locator = @Class(game.Locator)
+var ctrl = Locator.GetPlayerController()
+if (@IsNull(ctrl)) { @Exit("waiting for player") }
+
+var jet = ctrl._jetpackModel
+if (@IsNull(jet)) { @Exit("waiting for jetpack") }
+
+set jet._maxTranslationalThrust = transThrust
+set jet._boostThrust = boostThrust

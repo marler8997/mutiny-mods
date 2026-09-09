@@ -1,0 +1,6 @@
+@Section(.update)
+var game = @Assembly("Assembly-CSharp")
+var Character = @Class(game.Character)
+if (Character.get_localCharacterExists() == 0) { @Exit("no character") }
+var me = Character.localCharacter
+me.data.set_currentStamina(me.GetMaxStamina())

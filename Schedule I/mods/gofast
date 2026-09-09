@@ -1,0 +1,16 @@
+@Section(.update)
+var speed   = 5.0
+var jump    = 2.0
+var gravity = 1.0
+var game = @Assembly("Assembly-CSharp")
+var PM = @Class(game.ScheduleOne.PlayerScripts.PlayerMovement)
+set PM.StaticMoveSpeedMultiplier = speed
+set PM.JumpMultiplier = jump
+set PM.GravityMultiplier = gravity
+
+@Section(.disable)
+var game = @Assembly("Assembly-CSharp")
+var PM = @Class(game.ScheduleOne.PlayerScripts.PlayerMovement)
+set PM.StaticMoveSpeedMultiplier = 1.0
+set PM.JumpMultiplier = 1.0
+set PM.GravityMultiplier = 1.0

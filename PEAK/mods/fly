@@ -1,0 +1,42 @@
+// Fly: stronger jumps, unlimited air jumps, and auto-jump while the jump button is held.
+//   jumpImpulse: game default = 400
+// Disabling restores the jump strength and removes the extra jumps.
+@Section(.update)
+var jumpImpulse = 1080
+
+var game = @Assembly("Assembly-CSharp")
+var Character = @Class(game.Character)
+var CharacterInput = @Class(game.CharacterInput)
+if (Character.get_localCharacterExists() == 0) { @Exit("no character") }
+var me = Character.localCharacter
+var d = me.data
+var a = me.refs.afflictions
+var mv = me.refs.movement
+
+// 0. jump strength
+set mv.jumpImpulse = jumpImpulse
+
+// 1. unlimited air jumps
+set a.totalExtraJumps = 999999
+set d.extraJumps = 999999
+
+// 2. auto-jump while held (TryToJump refuses while isJumping is set or sinceJump is small)
+if (CharacterInput.action_jump.IsPressed() == 1) {
+    set d.isJumping = 0
+    set d.sinceJump = 10
+    mv.TryToJump()
+}
+@Exit("hold jump to fly")
+
+@Section(.disable)
+var game = @Assembly("Assembly-CSharp")
+var Character = @Class(game.Character)
+if (Character.get_localCharacterExists() == 0) { @Exit("no character") }
+var me = Character.localCharacter
+var d = me.data
+var a = me.refs.afflictions
+var mv = me.refs.movement
+set mv.jumpImpulse = 400
+set a.totalExtraJumps = 0
+set d.extraJumps = 0
+set d.jumpsRemaining = 1
