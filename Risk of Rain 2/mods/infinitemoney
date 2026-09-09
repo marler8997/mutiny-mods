@@ -1,0 +1,16 @@
+// Infinite money: gold is topped back up to `money` whenever it drops below it.
+// EDIT the number and SAVE to tune. Needs you to be the host / single player.
+// Pauses while leaving a stage: the teleporter/portal drains your gold into XP and won't finish
+// until it reaches 0, so refilling then would make the exit never end. Refills on the next stage.
+// Disabling leaves whatever gold you have at that moment.
+@Section(.update)
+var money = 100000
+
+var ror = @Assembly("RoR2")
+if (@Class(ror.RoR2.SceneExitController).get_isRunning() == 1) { @Exit("leaving stage, letting gold drain") }
+if (@Class(ror.RoR2.SceneExitControllerColossusPortal).get_isRunning() == 1) { @Exit("leaving stage, letting gold drain") }
+var lu = @Class(ror.RoR2.LocalUserManager).GetFirstLocalUser()
+if (@IsNull(lu)) { @Exit("no local user") }
+var master = lu.get_cachedMaster()
+if (@IsNull(master)) { @Exit("not in a run") }
+if (master.get_money() < money) { master.set_money(money) }

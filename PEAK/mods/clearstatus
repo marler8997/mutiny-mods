@@ -1,0 +1,16 @@
+// No curable afflictions: Hunger, Injury, Cold, Poison, Hot, Drowsy, Thorns and Spores are
+// zeroed whenever they appear. Curse and Weight are left alone. Nothing to undo when disabled.
+@Section(.update)
+var game = @Assembly("Assembly-CSharp")
+var Character = @Class(game.Character)
+if (Character.get_localCharacterExists() == 0) { @Exit("no character") }
+var a = Character.localCharacter.refs.afflictions
+// NOTE: we check each status before because setting may result in sending network packets
+if (a.GetCurrentStatus(.Hunger) > 0) { a.SetStatus(.Hunger, 0, 0) }
+if (a.GetCurrentStatus(.Injury) > 0) { a.SetStatus(.Injury, 0, 0) }
+if (a.GetCurrentStatus(.Cold) > 0)   { a.SetStatus(.Cold, 0, 0) }
+if (a.GetCurrentStatus(.Poison) > 0) { a.SetStatus(.Poison, 0, 0) }
+if (a.GetCurrentStatus(.Hot) > 0)    { a.SetStatus(.Hot, 0, 0) }
+if (a.GetCurrentStatus(.Drowsy) > 0) { a.SetStatus(.Drowsy, 0, 0) }
+if (a.GetCurrentStatus(.Thorns) > 0) { a.SetStatus(.Thorns, 0, 0) }
+if (a.GetCurrentStatus(.Spores) > 0) { a.SetStatus(.Spores, 0, 0) }

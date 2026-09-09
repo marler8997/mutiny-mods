@@ -1,0 +1,23 @@
+// Game speed: Unity's time scale. EDIT the number and SAVE to tune.
+//   speed: game default = 1.0 (2.0 = everything twice as fast, 0.5 = slow motion)
+// Leaves the pause menu alone (the game pauses by setting time scale to 0).
+// Disabling restores normal speed, also when disabled from the pause menu.
+@Section(.update)
+var speed = 2.0
+
+var core = @Assembly("UnityEngine.CoreModule")
+var Time = @Class(core.UnityEngine.Time)
+var now = Time.get_timeScale()
+if (now == 0) { @Exit("paused") }
+var d = now - speed
+if (d > 0.001) { Time.set_timeScale(speed) }
+if (d + 0.001 < 0) { Time.set_timeScale(speed) }
+
+@Section(.disable)
+var core = @Assembly("UnityEngine.CoreModule")
+var Time = @Class(core.UnityEngine.Time)
+if (Time.get_timeScale() != 0) { Time.set_timeScale(1.0) }
+// while paused the game holds our speed in _oldTimeScale and puts it back on unpause
+var ror = @Assembly("RoR2")
+var psc = @Class(ror.RoR2.PauseStopController).get_instance()
+if (@NotNull(psc)) { set psc._oldTimeScale = 1.0 }

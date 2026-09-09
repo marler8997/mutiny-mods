@@ -1,0 +1,22 @@
+// Faster movement. EDIT the numbers and SAVE to tune.
+//   movementForce:    game default = 25  (walk + sprint speed together)
+//   sprintMultiplier: game default = 2   (sprint speed relative to walking)
+// Disabling restores both defaults.
+@Section(.update)
+var movementForce = 120
+var sprintMultiplier = 4
+
+var game = @Assembly("Assembly-CSharp")
+var Character = @Class(game.Character)
+if (Character.get_localCharacterExists() == 0) { @Exit("no character") }
+var mv = Character.localCharacter.refs.movement
+set mv.movementForce = movementForce
+set mv.sprintMultiplier = sprintMultiplier
+
+@Section(.disable)
+var game = @Assembly("Assembly-CSharp")
+var Character = @Class(game.Character)
+if (Character.get_localCharacterExists() == 0) { @Exit("no character") }
+var mv = Character.localCharacter.refs.movement
+set mv.movementForce = 25
+set mv.sprintMultiplier = 2

@@ -1,0 +1,26 @@
+// No cooldowns: primary, secondary, utility and special are refilled to full stock every frame.
+// Nothing to undo when disabled; skills just recharge normally again.
+@Section(.update)
+var ror = @Assembly("RoR2")
+var lu = @Class(ror.RoR2.LocalUserManager).GetFirstLocalUser()
+if (@IsNull(lu)) { @Exit("no local user") }
+var body = lu.get_cachedBody()
+if (@IsNull(body)) { @Exit("no body") }
+var sl = body.get_skillLocator()
+if (@IsNull(sl)) { @Exit("no skill locator") }
+var s1 = sl.primary
+if (@NotNull(s1)) {
+    if (s1.get_stock() < s1.get_maxStock()) { s1.set_stock(s1.get_maxStock()) }
+}
+var s2 = sl.secondary
+if (@NotNull(s2)) {
+    if (s2.get_stock() < s2.get_maxStock()) { s2.set_stock(s2.get_maxStock()) }
+}
+var s3 = sl.utility
+if (@NotNull(s3)) {
+    if (s3.get_stock() < s3.get_maxStock()) { s3.set_stock(s3.get_maxStock()) }
+}
+var s4 = sl.special
+if (@NotNull(s4)) {
+    if (s4.get_stock() < s4.get_maxStock()) { s4.set_stock(s4.get_maxStock()) }
+}

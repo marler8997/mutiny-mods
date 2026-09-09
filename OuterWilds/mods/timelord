@@ -1,0 +1,24 @@
+// === TIME LORD === (update mod: runs every frame)
+// World-speed dial for the whole physics-simulated solar system.
+// EDIT `speed` below, then SAVE.  1 = normal, 2-10 = fast-forward, 0.2 = slow-mo.
+//
+// It SKIPS when timeScale is 0, so the pause menu still works and you no longer
+// have to re-save after pausing (the old normal-mod version needed that).
+// To turn off: delete this file, or set speed = 1 and save. Turning it off
+// restores normal speed via the .disable section below.
+
+@Section(.update)
+var speed = 1
+
+var core = @Assembly("UnityEngine.CoreModule")
+var Time = @Class(core.UnityEngine.Time)
+var cur = Time.get_timeScale()
+
+// leave 0 alone (that is the pause menu); otherwise hold it at `speed`
+if (cur != 0) { Time.set_timeScale(speed) }
+
+@Section(.disable)
+// restore normal speed when turned off, so the world isn't left fast-forwarding
+var core = @Assembly("UnityEngine.CoreModule")
+var Time = @Class(core.UnityEngine.Time)
+if (Time.get_timeScale() != 0) { Time.set_timeScale(1) }

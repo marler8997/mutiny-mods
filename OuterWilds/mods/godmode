@@ -1,0 +1,29 @@
+// === GOD MODE === (update mod: runs every frame, survives time-loop resets)
+//   1. Invincibility   - no damage / impact / suffocation death
+//   2. Infinite fuel   - jetpack never runs dry
+//   3. Infinite oxygen - never suffocate
+//   4. Infinite boost  - the jetpack boost meter never drains
+//
+// Does NOT stop scripted deaths (sun, black hole) or the ~22-min supernova reset.
+// To turn off: delete this file. (Invincibility flag clears on the next loop reset.)
+
+@Section(.update)
+var game = @Assembly("Assembly-CSharp")
+var Locator = @Class(game.Locator)
+var ctrl = Locator.GetPlayerController()
+if (@IsNull(ctrl)) { @Exit("waiting for player") }
+
+var pr = ctrl._playerResources
+if (@IsNull(pr)) { @Exit("waiting for resources") }
+
+var PR = @ClassOf(pr)
+
+if (pr.IsInvincible() == 0) {
+    pr.ToggleInvincibility()
+}
+set pr._currentFuel = PR._maxFuel
+set pr._currentOxygen = PR._maxOxygen
+var jet = ctrl._jetpackModel
+if (@NotNull(jet)) {
+    set jet._boostChargeFraction = 1
+}

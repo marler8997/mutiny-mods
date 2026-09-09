@@ -1,0 +1,29 @@
+// God mode: the game's own HealthComponent.godMode flag, so no damage is taken at all
+// (enemies, falling, lava, void). Needs you to be the host / single player.
+// Disabling puts the flag back to what the game would have it (off, unless the dev god cheat is on).
+@Section(.update)
+var ror = @Assembly("RoR2")
+var lu = @Class(ror.RoR2.LocalUserManager).GetFirstLocalUser()
+if (@IsNull(lu)) { @Exit("no user") }
+var body = lu.get_cachedBody()
+if (@IsNull(body)) { @Exit("no body") }
+var hc = body.get_healthComponent()
+if (@IsNull(hc)) { @Exit("no health component") }
+if (hc.get_godMode() == 0) { hc.set_godMode(1) }
+
+@Section(.disable)
+var ror = @Assembly("RoR2")
+var lu = @Class(ror.RoR2.LocalUserManager).GetFirstLocalUser()
+if (@IsNull(lu)) { @Exit("no local user") }
+var body = lu.get_cachedBody()
+if (@IsNull(body)) { @Exit("no body") }
+var hc = body.get_healthComponent()
+if (@IsNull(hc)) { @Exit("no health component") }
+var restore = 0
+if (hc.isDefaultGodMode == 1) { set restore = 1 }
+var master = lu.get_cachedMaster()
+if (@NotNull(master)) {
+    if (master.godMode == 1) { set restore = 1 }
+}
+if (restore == 0) { hc.set_godMode(0) }
+if (restore == 1) { hc.set_godMode(1) }

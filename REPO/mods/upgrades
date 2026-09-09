@@ -1,0 +1,63 @@
+@Section(.update)
+var sprintLevel   = 7
+var staminaLevel  = 1000
+var healthLevel   = 1000
+var jumpLevel     = 1000
+var throwLevel    = 1
+var rangeLevel    = 8
+var strengthLevel = 50
+
+var Steamworks = @Assembly("Facepunch.Steamworks.Win64")
+var SteamClient = @Class(Steamworks.Steamworks.SteamClient)
+if (SteamClient.get_IsValid() == 0) { @Exit("waiting for steam") }
+var steam_id = @ToString(SteamClient.get_SteamId().Value)
+
+var game = @Assembly("Assembly-CSharp")
+var SemiFunc = @Class(game.SemiFunc)
+var StatsManager = @Class(game.StatsManager)
+var PunManager = @Class(game.PunManager)
+
+var sm = StatsManager.instance
+if (@IsNull(sm)) { @Exit("waiting for StatsManager") }
+var pm = PunManager.instance
+if (@IsNull(pm)) { @Exit("waiting for PunManager") }
+// the health upgrade silently does nothing to max health without an avatar
+var me = SemiFunc.PlayerAvatarGetFromSteamID(steam_id)
+if (@IsNull(me)) { @Exit("waiting for player") }
+
+var cur = 0
+
+var speedDict = sm.playerUpgradeSpeed
+if (speedDict.ContainsKey(steam_id) == 1) { set cur = speedDict.get_Item(steam_id) }
+if (cur != sprintLevel) { @Discard(pm.UpgradePlayerSprintSpeed(steam_id, sprintLevel - cur)) }
+
+set cur = 0
+var staminaDict = sm.playerUpgradeStamina
+if (staminaDict.ContainsKey(steam_id) == 1) { set cur = staminaDict.get_Item(steam_id) }
+if (cur != staminaLevel) { @Discard(pm.UpgradePlayerEnergy(steam_id, staminaLevel - cur)) }
+
+set cur = 0
+var healthDict = sm.playerUpgradeHealth
+if (healthDict.ContainsKey(steam_id) == 1) { set cur = healthDict.get_Item(steam_id) }
+if (cur != healthLevel) { @Discard(pm.UpgradePlayerHealth(steam_id, healthLevel - cur)) }
+
+set cur = 0
+var jumpDict = sm.playerUpgradeExtraJump
+if (jumpDict.ContainsKey(steam_id) == 1) { set cur = jumpDict.get_Item(steam_id) }
+if (cur != jumpLevel) { @Discard(pm.UpgradePlayerExtraJump(steam_id, jumpLevel - cur)) }
+
+set cur = 0
+var throwDict = sm.playerUpgradeThrow
+if (throwDict.ContainsKey(steam_id) == 1) { set cur = throwDict.get_Item(steam_id) }
+if (cur != throwLevel) { @Discard(pm.UpgradePlayerThrowStrength(steam_id, throwLevel - cur)) }
+
+set cur = 0
+var rangeDict = sm.playerUpgradeRange
+if (rangeDict.ContainsKey(steam_id) == 1) { set cur = rangeDict.get_Item(steam_id) }
+if (cur != rangeLevel) { @Discard(pm.UpgradePlayerGrabRange(steam_id, rangeLevel - cur)) }
+
+set cur = 0
+var strengthDict = sm.playerUpgradeStrength
+if (strengthDict.ContainsKey(steam_id) == 1) { set cur = strengthDict.get_Item(steam_id) }
+if (cur != strengthLevel) { @Discard(pm.UpgradePlayerGrabStrength(steam_id, strengthLevel - cur)) }
+

@@ -1,0 +1,70 @@
+// Stat boosts on top of your survivor's normal stats. Items still stack on top of these.
+// EDIT the numbers and SAVE to tune (1.0 = normal).
+//   moveSpeedMult:   movement speed multiplier
+//   damageMult:      base damage multiplier (also scales per-level damage growth)
+//   attackSpeedMult: attack speed multiplier
+//   extraJumps:      jumps added to the survivor's normal count (most have 1)
+// Disabling restores your survivor's normal base stats.
+@Section(.update)
+var moveSpeedMult = 1.5
+var damageMult = 2.0
+var attackSpeedMult = 1.5
+var extraJumps = 2
+
+var ror = @Assembly("RoR2")
+var lu = @Class(ror.RoR2.LocalUserManager).GetFirstLocalUser()
+if (@IsNull(lu)) { @Exit("no local user") }
+var master = lu.get_cachedMaster()
+if (@IsNull(master)) { @Exit("not in a run") }
+var body = lu.get_cachedBody()
+if (@IsNull(body)) { @Exit("no body") }
+if (@IsNull(master.bodyPrefab)) { @Exit("no body prefab") }
+// the unmodified stats come from the survivor's prefab; there is no `*`, so x * m is x / (1 / m)
+var def = master.bodyPrefab.GetComponent("CharacterBody")
+if (@IsNull(def)) { @Exit("body prefab has no CharacterBody") }
+var wantMove = def.baseMoveSpeed / (1.0 / moveSpeedMult)
+var wantDamage = def.baseDamage / (1.0 / damageMult)
+var wantLevelDamage = def.levelDamage / (1.0 / damageMult)
+var wantAttack = def.baseAttackSpeed / (1.0 / attackSpeedMult)
+var wantJumps = def.baseJumpCount + extraJumps
+
+// only recalculate when something is off (fields are float32, so compare with a tolerance)
+var dirty = 0
+var d = body.baseMoveSpeed - wantMove
+if (d > 0.001) { set dirty = 1 }
+if (d + 0.001 < 0) { set dirty = 1 }
+set d = body.baseDamage - wantDamage
+if (d > 0.001) { set dirty = 1 }
+if (d + 0.001 < 0) { set dirty = 1 }
+set d = body.levelDamage - wantLevelDamage
+if (d > 0.001) { set dirty = 1 }
+if (d + 0.001 < 0) { set dirty = 1 }
+set d = body.baseAttackSpeed - wantAttack
+if (d > 0.001) { set dirty = 1 }
+if (d + 0.001 < 0) { set dirty = 1 }
+if (body.baseJumpCount != wantJumps) { set dirty = 1 }
+if (dirty == 0) { @Exit() }
+set body.baseMoveSpeed = wantMove
+set body.baseDamage = wantDamage
+set body.levelDamage = wantLevelDamage
+set body.baseAttackSpeed = wantAttack
+set body.baseJumpCount = wantJumps
+body.RecalculateStats()
+
+@Section(.disable)
+var ror = @Assembly("RoR2")
+var lu = @Class(ror.RoR2.LocalUserManager).GetFirstLocalUser()
+if (@IsNull(lu)) { @Exit("no local user") }
+var master = lu.get_cachedMaster()
+if (@IsNull(master)) { @Exit("not in a run") }
+var body = lu.get_cachedBody()
+if (@IsNull(body)) { @Exit("no body") }
+if (@IsNull(master.bodyPrefab)) { @Exit("no body prefab") }
+var def = master.bodyPrefab.GetComponent("CharacterBody")
+if (@IsNull(def)) { @Exit("body prefab has no CharacterBody") }
+set body.baseMoveSpeed = def.baseMoveSpeed
+set body.baseDamage = def.baseDamage
+set body.levelDamage = def.levelDamage
+set body.baseAttackSpeed = def.baseAttackSpeed
+set body.baseJumpCount = def.baseJumpCount
+body.RecalculateStats()

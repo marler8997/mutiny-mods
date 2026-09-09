@@ -1,0 +1,18 @@
+@Section(.update)
+var game = @Assembly("Assembly-CSharp")
+var PO = @Class(game.ScheduleOne.Police.PoliceOfficer)
+var all = PO.Officers
+if (@IsNull(all)) { @Exit("no officer list") }
+var n = all.get_Count()
+var i = 0
+loop
+    if (i >= n) { break }
+    var off = all.get_Item(i)
+    if (@NotNull(off)) {
+        var pb = off.PursuitBehaviour
+        if (@NotNull(pb)) {
+            set pb.timeWithinArrestRange = 0.0
+        }
+    }
+    set i = i + 1
+continue
